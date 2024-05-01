@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Bookings</string>
+    <string name="select_campus">Select Campus</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_slot">Pick Time Slot</string>
+    <string name="book_slot">Book\n</string>
+</resources>
