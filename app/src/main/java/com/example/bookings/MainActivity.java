@@ -17,14 +17,14 @@ public class MainActivity extends AppCompatActivity {
     private DatePicker datePicker;
     private Spinner spinnerTimeSlots;
     private Button btnSubmit;
-    private NewDBHelper dbHelper; // Database helper object
+    private DBHelper dbHelper; // Database helper object
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new NewDBHelper(this);
+        dbHelper = new DBHelper(this);
 
         spinnerCampus = findViewById(R.id.spinnerCampus);
         datePicker = findViewById(R.id.datePicker);
@@ -122,20 +122,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void saveBookingToDatabase(String campus, String date, String timeSlot) {
-        // Use dbHelper to insert the booking into the database
-        long bookingId = dbHelper.insertBooking(campus, date, timeSlot);
 
-        // You can handle the result (bookingId) to show any confirmation message or log as needed
-        if (bookingId != -1) {
-            Toast.makeText(this, "Booking made for " + date + "at " + timeSlot, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Failed to save booking", Toast.LENGTH_SHORT).show();
-        }
-        dbHelper.close();
-    }
 
     public void attemptBooking() {
+        int userId = 10;
         String selectedCampus = spinnerCampus.getSelectedItem().toString();
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
@@ -148,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!dbHelper.isSlotBooked(selectedCampus, selectedTimeSlot, formattedDate)) {
             // Slot is not booked, proceed with booking
-            long result = dbHelper.insertBooking(selectedCampus, formattedDate, selectedTimeSlot);
+            long result = dbHelper.insertBooking(/**userId,**/ selectedCampus, formattedDate, selectedTimeSlot);
             if (result != -1) {
                 Toast.makeText(this, "Booking successful!", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, Booking_admin_Activity.class);

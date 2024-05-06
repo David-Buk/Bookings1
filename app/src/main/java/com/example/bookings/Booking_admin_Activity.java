@@ -1,6 +1,9 @@
 package com.example.bookings;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,15 +24,30 @@ public class Booking_admin_Activity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_admin_booking);
 
-        // Assuming 'recyclerView' is already defined in your layout
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        List<Bookings> emailItems = new ArrayList<>();
-        emailItems.add(new Bookings("sample.email@example.com", "01/01/2021", "12:00 PM"));
-        // Add more items to emailItems as needed
+        // In your activity
+        RecyclerView recyclerView = findViewById(R.id.recycleView);
+        Spinner campusSpinner = findViewById(R.id.campusSpinner);
 
-        BookingsAdapter adapter = new BookingsAdapter(emailItems);
+        List<Bookings> bookingItems = new ArrayList<>();
+        // Populate bookingItems with actual data
+
+        BookingsAdapter adapter = new BookingsAdapter(bookingItems);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up the spinner
+        campusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCampus = parent.getItemAtPosition(position).toString();
+                adapter.filterByCampus(selectedCampus);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
 
     }
 }
