@@ -3,6 +3,7 @@ package com.example.bookings;
 
 import android.annotation.SuppressLint;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
 import android.view.View;
@@ -150,12 +151,14 @@ public class MainActivity extends AppCompatActivity {
             long result = dbHelper.insertBooking(selectedCampus, formattedDate, selectedTimeSlot);
             if (result != -1) {
                 Toast.makeText(this, "Booking successful!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, Booking_admin_Activity.class);
+                startActivity(intent);
             } else {
                 Toast.makeText(this, "Failed to book slot.", Toast.LENGTH_LONG).show();
             }
         }
         // Slot is already booked
-        Toast.makeText(this, "Slot already booked for this date.", Toast.LENGTH_LONG).show();
+        else Toast.makeText(this, "Slot already booked for this date.", Toast.LENGTH_LONG).show();
 
     }
 

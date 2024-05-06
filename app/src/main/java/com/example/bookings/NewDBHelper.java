@@ -56,25 +56,6 @@ public class NewDBHelper extends SQLiteOpenHelper {
         return newRowId;
     }
 
-    public long bookSlot(String campus, String date, String timeSlot) {
-        if (isSlotBooked(campus, timeSlot, date)) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_CAMPUS, campus);
-            values.put(COLUMN_DATE, date);
-            values.put(COLUMN_TIME_SLOT, timeSlot);
-            values.put(COLUMN_IS_AVAILABLE, 0); // Slot is no longer available
-            long result = db.insert(TABLE_BOOKINGS, null, values);
-            db.close();
-            return result;
-        } else {
-            return -1; // Indicate slot not available
-        }
-    }
-
-//-------------------------------------- Test ----------------------------------------------
-
-
     public boolean isSlotBooked(String campusName, String slotTime, String bookingDate) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_BOOKINGS + " WHERE "
