@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
         }
         // Slot is already booked
         else Toast.makeText(this, "Slot already booked for this date.", Toast.LENGTH_LONG).show();
-
     }
 
 }
