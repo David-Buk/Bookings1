@@ -1,10 +1,14 @@
 package com.example.bookings;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -108,5 +112,29 @@ public class DBHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(TABLE_BOOKINGS, null, values);
         db.close();
         return newRowId;
+    }
+
+
+    public List<Bookings> getAllBookings() {
+        List<Bookings> bookingsList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM Bookings", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") Bookings booking = new Bookings(
+                        //cursor.getString(cursor.getColumnIndex("booking_id")),
+                        //cursor.getString(cursor.getColumnIndex("user_id")),
+                        cursor.getString(cursor.getColumnIndex("campus")),
+                        cursor.getString(cursor.getColumnIndex("date")),
+                        cursor.getString(cursor.getColumnIndex("time_slot"))
+                );
+                bookingsList.add(booking);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bookingsList;
     }
 }

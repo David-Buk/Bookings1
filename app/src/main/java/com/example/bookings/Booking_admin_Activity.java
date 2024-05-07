@@ -18,36 +18,22 @@ import java.util.List;
 
 public class Booking_admin_Activity extends AppCompatActivity {
 
+    private RecyclerView recyclerView;
+    private BookingsAdapter adapter;
+    private DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_admin_booking);
 
-        // In your activity
-        RecyclerView recyclerView = findViewById(R.id.recycleView);
-        Spinner campusSpinner = findViewById(R.id.campusSpinner);
-
-        List<Bookings> bookingItems = new ArrayList<>();
-        // Populate bookingItems with actual data
-
-        BookingsAdapter adapter = new BookingsAdapter(bookingItems);
-        recyclerView.setAdapter(adapter);
+        recyclerView = findViewById(R.id.recycleView); // Ensure this ID matches your layout
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set up the spinner
-        campusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCampus = parent.getItemAtPosition(position).toString();
-                adapter.filterByCampus(selectedCampus);
-            }
+        dbHelper = new DBHelper(this);
+        List<Bookings> bookings = dbHelper.getAllBookings();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-
+        adapter = new BookingsAdapter(bookings);
+        recyclerView.setAdapter(adapter);
     }
 }

@@ -3,6 +3,7 @@ package com.example.bookings;
 
 import android.annotation.SuppressLint;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.*;
@@ -10,6 +11,7 @@ import android.view.View;
 import java.util.Calendar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -140,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
             // Slot is not booked, proceed with booking
             long result = dbHelper.insertBooking(/**userId,**/ selectedCampus, formattedDate, selectedTimeSlot);
             if (result != -1) {
+                NotificationCompat.Builder mbuilder = new NotificationCompat.Builder(getApplicationContext())
+                        .setSmallIcon(R.drawable.icon)
+                        .setContentTitle("Notification")
+                        .setContentText("Booking for " + formattedDate + " at: " + selectedTimeSlot + " on " + selectedCampus + ", has been Confirmed!");
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.notify(0, mbuilder.build());
                 Toast.makeText(this, "Booking successful!", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, Booking_admin_Activity.class);
                 startActivity(intent);

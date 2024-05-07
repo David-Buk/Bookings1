@@ -9,7 +9,7 @@
     <Spinner
         android:id="@+id/campusSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:entries="@array/campus_array"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="16dp"/>
@@ -25,28 +25,28 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Email"
+            android:text="@string/email"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Date"
+            android:text="@string/date"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Time"
+            android:text="@string/time"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Select"
+            android:text="@string/select"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
     </LinearLayout>
 

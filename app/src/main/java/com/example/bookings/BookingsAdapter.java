@@ -31,13 +31,6 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
             timeTextView = view.findViewById(R.id.timeTextView);
             selectCheckBox = view.findViewById(R.id.selectCheckBox);
         }
-
-        public void bindData(Bookings item) {
-            campusTextView.setText(item.getCampus());
-            dateTextView.setText(item.getDate());
-            timeTextView.setText(item.getTime());
-            selectCheckBox.setChecked(false); // Assuming dynamic state based on data
-        }
     }
 
     public BookingsAdapter(List<Bookings> data) {
@@ -54,8 +47,12 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.bindData(mDataFiltered.get(position));
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        Bookings booking = mData.get(position);
+        holder.campusTextView.setText(booking.getCampus());
+        holder.dateTextView.setText(booking.getDate());
+        holder.timeTextView.setText(booking.getTime());
+        //holder.selectCheckBox.setChecked;
     }
 
     @Override
