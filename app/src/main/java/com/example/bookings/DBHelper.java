@@ -48,6 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_EMAIL = "email";
+    private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_ROLE = "role";
 
     private static final String SQL_CREATE_USERS =
@@ -55,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     COLUMN_USER_ID + " TEXT PRIMARY KEY," +
                     COLUMN_NAME + " TEXT NOT NULL," +
                     COLUMN_EMAIL + " TEXT NOT NULL," +
+                    COLUMN_PASSWORD + " TEXT NOT NULL," +
                     COLUMN_ROLE + " TEXT NOT NULL)";
 
 
@@ -137,4 +139,60 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return bookingsList;
     }
+
+
+    public List<Bookings> getBookingsByUserId(String userId) {
+        List<Bookings> bookingsList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = {COLUMN_ID, COLUMN_USER_ID, COLUMN_CAMPUS, COLUMN_DATE, COLUMN_TIME_SLOT};
+        String selection = COLUMN_USER_ID + " = ?";
+        String[] selectionArgs = {userId};
+
+        Cursor cursor = db.query(TABLE_BOOKINGS, columns, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") Bookings booking = new Bookings(
+                        //cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
+                        //cursor.getString(cursor.getColumnIndex(COLUMN_USER_ID)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_CAMPUS)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_DATE)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_TIME_SLOT))
+                );
+                bookingsList.add(booking);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bookingsList;
+    }
+
+
+    public List<Bookings> getBookingsByCampus(String campus) {
+        List<Bookings> bookingsList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = campus.equals("All Campuses") ? null : COLUMN_CAMPUS + " = ?";
+        String[] selectionArgs = campus.equals("All Campuses") ? null : new String[]{campus};
+
+        Cursor cursor = db.query(TABLE_BOOKINGS, null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") Bookings booking = new Bookings(
+                        //cursor.getString(cursor.getColumnIndex("booking_id")),
+                        //cursor.getString(cursor.getColumnIndex("user_id")),
+                        cursor.getString(cursor.getColumnIndex("campus")),
+                        cursor.getString(cursor.getColumnIndex("date")),
+                        cursor.getString(cursor.getColumnIndex("time_slot"))
+                );
+                bookingsList.add(booking);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bookingsList;
+    }
+
+
 }
