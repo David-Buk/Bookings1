@@ -15,21 +15,19 @@ import java.util.ArrayList;
 
 
 public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHolder> {
-    private final List<Bookings> mData;
-    private final List<Bookings> mDataFiltered;
+    private List<Bookings> mData;
+    private List<Bookings> mDataFiltered;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView campusTextView;
         private final TextView dateTextView;
         private final TextView timeTextView;
-        private final CheckBox selectCheckBox;
 
         public ViewHolder(View view) {
             super(view);
             campusTextView = view.findViewById(R.id.campusTextView);
             dateTextView = view.findViewById(R.id.dateTextView);
             timeTextView = view.findViewById(R.id.timeTextView);
-            selectCheckBox = view.findViewById(R.id.selectCheckBox);
         }
     }
 
@@ -48,11 +46,10 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Bookings booking = mData.get(position);
+        Bookings booking = mDataFiltered.get(position);
         holder.campusTextView.setText(booking.getCampus());
         holder.dateTextView.setText(booking.getDate());
         holder.timeTextView.setText(booking.getTime());
-        //holder.selectCheckBox.setChecked;
     }
 
     @Override
@@ -60,18 +57,9 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
         return mDataFiltered.size();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void filterByCampus(String campus) {
-        mDataFiltered.clear();
-        if (campus.equals("All")) {
-            mDataFiltered.addAll(mData);
-        } else {
-            for (Bookings item : mData) {
-                if (item.getCampus().equals(campus)) {
-                    mDataFiltered.add(item);
-                }
-            }
-        }
+    public void updateData(List<Bookings> newData) {
+        mData = new ArrayList<>(newData);
+        mDataFiltered = new ArrayList<>(newData);
         notifyDataSetChanged();
     }
 }

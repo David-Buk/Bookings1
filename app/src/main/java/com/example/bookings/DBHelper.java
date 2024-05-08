@@ -168,4 +168,31 @@ public class DBHelper extends SQLiteOpenHelper {
         return bookingsList;
     }
 
+
+    public List<Bookings> getBookingsByCampus(String campus) {
+        List<Bookings> bookingsList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = campus.equals("All Campuses") ? null : COLUMN_CAMPUS + " = ?";
+        String[] selectionArgs = campus.equals("All Campuses") ? null : new String[]{campus};
+
+        Cursor cursor = db.query(TABLE_BOOKINGS, null, selection, selectionArgs, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") Bookings booking = new Bookings(
+                        //cursor.getString(cursor.getColumnIndex("booking_id")),
+                        //cursor.getString(cursor.getColumnIndex("user_id")),
+                        cursor.getString(cursor.getColumnIndex("campus")),
+                        cursor.getString(cursor.getColumnIndex("date")),
+                        cursor.getString(cursor.getColumnIndex("time_slot"))
+                );
+                bookingsList.add(booking);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bookingsList;
+    }
+
+
 }
