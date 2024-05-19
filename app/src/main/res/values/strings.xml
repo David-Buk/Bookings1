@@ -1,9 +1,24 @@
 <resources>
+
+<!-- Login and Registration Strings _____________________________________________________________-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+
+<!-- Admin and User Strings _____________________________________________________________________-->
+    <string name="admin_dash">Admin Dash</string>
+
+<!-- Booking Strings ____________________________________________________________________________-->
     <string name="app_name">Bookings</string>
     <string name="select_campus">Select Campus</string>
     <string name="select_date">Select Date</string>
     <string name="select_slot">Pick Time Slot</string>
     <string name="book_slot">Book\n</string>
+
+    <string name="campus">Campus</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
     <string-array name="campus_array">
         <item>All Campuses</item>
         <item>Steve Biko Campus</item>
@@ -11,4 +26,5 @@
         <item>ML Sultan Campus</item>
         <item>City Campus</item>
     </string-array>
+
 </resources>

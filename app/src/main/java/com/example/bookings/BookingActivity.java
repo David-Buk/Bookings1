@@ -3,29 +3,39 @@ package com.example.bookings;
 
 import android.annotation.SuppressLint;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.*;
 import android.view.View;
 import java.util.Calendar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class BookingActivity extends AppCompatActivity {
 
     private Spinner spinnerCampus;
     private DatePicker datePicker;
     private Spinner spinnerTimeSlots;
     private Button btnSubmit;
     private DBHelper dbHelper; // Database helper object
+    // Retrieve the email passed from the login activity
+    private String email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_booking);
+
+        // Retrieve the email passed from the login activity
+        email = getIntent().getStringExtra("email");
 
         dbHelper = new DBHelper(this);
-
         spinnerCampus = findViewById(R.id.spinnerCampus);
         datePicker = findViewById(R.id.datePicker);
         spinnerTimeSlots = findViewById(R.id.spinnerTimeSlots);
@@ -41,10 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupCampusSpinner() {
         // Sample campus names, replace with actual campus names
         String[] campuses = new String[] {
-                "Steve Biko Campus",
-                "Ritson Campus",
-                "ML Sultan Campus",
-                "City Campus"
+                "Steve Biko Campus", "Ritson Campus", "ML Sultan Campus", "City Campus"
         };
         ArrayAdapter<String> campusAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, campuses);
@@ -88,24 +95,12 @@ public class MainActivity extends AppCompatActivity {
     private void setupTimeSlots() {
         // Sample time slots, replace with dynamic data if needed
         String[] timeSlots = new String[]{
-                "09:00 AM - 09:20 AM",
-                "09:25 AM - 09:45 AM",
-                "10:10 AM - 10:30 AM",
-                "10:35 AM - 10:55 AM",
-                "11:00 AM - 11:20 AM",
-                "11:25 AM - 11:45 AM",
-                "11:50 AM - 12:10 PM",
-                "12:15 PM - 12:35 PM",
+                "09:00 AM - 09:20 AM", "09:25 AM - 09:45 AM", "10:10 AM - 10:30 AM", "10:35 AM - 10:55 AM",
+                "11:00 AM - 11:20 AM", "11:25 AM - 11:45 AM", "11:50 AM - 12:10 PM", "12:15 PM - 12:35 PM",
                 "12:40 PM - 01:00 PM",
                 //Break time
-                "02:00 PM - 02:15 PM",
-                "02:20 PM - 02:40 PM",
-                "02:45 PM - 03:05 PM",
-                "03:10 PM - 03:30 PM",
-                "03:35 PM - 03:55 PM",
-                "03:50 PM - 04:10 PM",
-                "04:15 PM - 04:35 PM",
-                "04:40 PM - 05:00 PM"
+                "02:00 PM - 02:15 PM", "02:20 PM - 02:40 PM", "02:45 PM - 03:05 PM", "03:10 PM - 03:30 PM",
+                "03:35 PM - 03:55 PM", "03:50 PM - 04:10 PM", "04:15 PM - 04:35 PM", "04:40 PM - 05:00 PM"
         };
         ArrayAdapter<String> timeSlotAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, timeSlots);
@@ -125,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void attemptBooking() {
-        int userId = 10;
         String selectedCampus = spinnerCampus.getSelectedItem().toString();
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
@@ -138,10 +132,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (!dbHelper.isSlotBooked(selectedCampus, selectedTimeSlot, formattedDate)) {
             // Slot is not booked, proceed with booking
-            long result = dbHelper.insertBooking(/**userId,**/ selectedCampus, formattedDate, selectedTimeSlot);
+            long result = dbHelper.insertBooking(email, selectedCampus, formattedDate, selectedTimeSlot);
             if (result != -1) {
+                setupNotification(formattedDate, selectedTimeSlot, selectedCampus);
                 Toast.makeText(this, "Booking successful!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, Booking_admin_Activity.class);
+                Intent intent = new Intent(BookingActivity.this, UserBookingActivity.class);
+                intent.putExtra("email", email);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Failed to book slot.", Toast.LENGTH_LONG).show();
@@ -149,7 +145,26 @@ public class MainActivity extends AppCompatActivity {
         }
         // Slot is already booked
         else Toast.makeText(this, "Slot already booked for this date.", Toast.LENGTH_LONG).show();
+    }
 
+
+    private void setupNotification(String formattedDate, String selectedTimeSlot, String selectedCampus) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "booking_notification_channel";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Booking Notifications",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder mbuilder = new NotificationCompat.Builder(this, channelId)
+                //.setSmallIcon(R.drawable.icon) // Make sure this icon exists in your drawable folder
+                .setContentTitle("Booking Confirmation")
+                .setContentText("Booking for " + formattedDate + " at: " + selectedTimeSlot + " on " + selectedCampus + ", has been Confirmed!");
+        notificationManager.notify(0, mbuilder.build());
     }
 
 }

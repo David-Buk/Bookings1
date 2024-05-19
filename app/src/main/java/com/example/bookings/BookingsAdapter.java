@@ -15,28 +15,21 @@ import java.util.ArrayList;
 
 
 public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHolder> {
-    private final List<Bookings> mData;
-    private final List<Bookings> mDataFiltered;
+    private List<Bookings> mData;
+    private List<Bookings> mDataFiltered;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView emailTextView;
         private final TextView campusTextView;
         private final TextView dateTextView;
         private final TextView timeTextView;
-        private final CheckBox selectCheckBox;
 
         public ViewHolder(View view) {
             super(view);
+            emailTextView = view.findViewById(R.id.emailTextView);
             campusTextView = view.findViewById(R.id.campusTextView);
             dateTextView = view.findViewById(R.id.dateTextView);
             timeTextView = view.findViewById(R.id.timeTextView);
-            selectCheckBox = view.findViewById(R.id.selectCheckBox);
-        }
-
-        public void bindData(Bookings item) {
-            campusTextView.setText(item.getCampus());
-            dateTextView.setText(item.getDate());
-            timeTextView.setText(item.getTime());
-            selectCheckBox.setChecked(false); // Assuming dynamic state based on data
         }
     }
 
@@ -54,8 +47,18 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.bindData(mDataFiltered.get(position));
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        Bookings booking = mDataFiltered.get(position);
+        holder.emailTextView.setText(booking.getEmail());
+        holder.campusTextView.setText(booking.getCampus());
+        holder.dateTextView.setText(booking.getDate());
+        holder.timeTextView.setText(booking.getTime());
+    }
+
+
+    public void setBookings(List<Bookings> bookings) {
+        this.mData = bookings;
+        notifyDataSetChanged(); // Notify the adapter that the underlying data has changed
     }
 
     @Override
@@ -63,18 +66,9 @@ public class BookingsAdapter extends RecyclerView.Adapter<BookingsAdapter.ViewHo
         return mDataFiltered.size();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void filterByCampus(String campus) {
-        mDataFiltered.clear();
-        if (campus.equals("All")) {
-            mDataFiltered.addAll(mData);
-        } else {
-            for (Bookings item : mData) {
-                if (item.getCampus().equals(campus)) {
-                    mDataFiltered.add(item);
-                }
-            }
-        }
+    public void updateData(List<Bookings> newData) {
+        mData = new ArrayList<>(newData);
+        mDataFiltered = new ArrayList<>(newData);
         notifyDataSetChanged();
     }
 }
